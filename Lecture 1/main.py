@@ -3,6 +3,8 @@ import re
 from newspaper import Article
 import difflib
 
+
+
 import requests
 from bs4 import BeautifulSoup
 import webbrowser
