@@ -7,6 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 import webbrowser
 
+
 # we are comparing two web scraping algorithms: newspaper3k and beautifoul soup 4
 # how matching works
 # - not minimal
