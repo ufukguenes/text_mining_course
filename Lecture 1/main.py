@@ -3,8 +3,6 @@ import re
 from newspaper import Article
 import difflib
 
-
-
 import requests
 from bs4 import BeautifulSoup
 import webbrowser
@@ -76,28 +74,33 @@ def clean_up(text: str):
     text = text.replace("  ", " ")
     return text
 
-
 for url in urls:
     bs4_title, bs4_text = get_with_bs4(url)
     np3k_title, np3k_text = get_with_np3k(url)
+    print(f"url: {url}")
 
     matcher = difflib.SequenceMatcher()
-
     matcher.set_seqs(bs4_text, np3k_text)
     ratios_pre.append(matcher.ratio())
-    print(f"pre text clean up ratio {matcher.ratio()}")
+    print(f"pre  text clean up ratio: {matcher.ratio()}")
 
     bs4_text = clean_up(bs4_text)
     np3k_text = clean_up(np3k_text)
 
     matcher.set_seqs(bs4_text, np3k_text)
     ratios_post.append(matcher.ratio())
-    print(f"post text clean up ratio {matcher.ratio()}")
+    print(f"post text clean up ratio: {matcher.ratio()}")
+    
+    ratios = [ratios_post,ratios_pre]
+    ratios_diff = [post-pre for post,pre in zip(*ratios)]
 
-
-    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
-        if tag == "equal":
-            continue
-
-        print('{:7}   a[{}:{}] --> b[{}:{}] {!r:>8} --> {!r}'.format(
-            tag, i1, i2, j1, j2, bs4_text[i1:i2], np3k_text[j1:j2]))
+    # for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+    #     if tag == "equal":
+    #         continue
+        
+    #     print('{:7}   a[{}:{}] --> b[{}:{}] {!r:>8} --> {!r}'.format(
+    #         tag, i1, i2, j1, j2, bs4_text[i1:i2], np3k_text[j1:j2]))
+        
+mean = sum(ratios_diff)/len(ratios_diff)
+print (f'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mean diff ratio: {mean}''')
